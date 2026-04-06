@@ -1,8 +1,8 @@
 import os
 import time
 import uuid
-import win32com.client as win32
-import pythoncom
+import subprocess
+import platform
 
 class PDFGenerator:
     def __init__(self):
@@ -29,29 +29,60 @@ class PDFGenerator:
 
     def create_pdf_from_excel(self, excel_path):
         """
-        Takes a perfectly formatted XLSX file and uses Excel's native
-        ExportAsFixedFormat to guarantee a 1-to-1 visual PDF match.
+        Конвертирует XLSX в PDF. 
+        На Windows использует Excel (если доступен), на Linux — LibreOffice.
         """
-        # Required for multithreaded environments like Flask
-        pythoncom.CoInitialize()
-        
         filename = f"estimate_{uuid.uuid4()}.pdf"
         pdf_path = os.path.join(self.temp_dir, filename)
         
-        # Open Excel headlessly using DispatchEx to ensure a fresh COM instance
-        excel = win32.DispatchEx('Excel.Application')
-        excel.Visible = False
-        excel.DisplayAlerts = False
-        
+        abs_excel_path = os.path.abspath(excel_path)
+        abs_pdf_path = os.path.abspath(pdf_path)
+
+        if platform.system() == 'Windows':
+            try:
+                import win32com.client as win32
+                import pythoncom
+                pythoncom.CoInitialize()
+                excel = win32.DispatchEx('Excel.Application')
+                excel.Visible = False
+                excel.DisplayAlerts = False
+                try:
+                    wb = excel.Workbooks.Open(abs_excel_path)
+                    wb.ExportAsFixedFormat(0, abs_pdf_path)
+                    wb.Close(False)
+                finally:
+                    excel.Quit()
+                    pythoncom.CoUninitialize()
+                return pdf_path
+            except Exception as e:
+                print(f"Excel COM failed, trying fallback: {e}")
+
+        # Fallback/Linux: LibreOffice
         try:
-            # Must use absolute paths for win32com
-            wb = excel.Workbooks.Open(os.path.abspath(excel_path))
+            # На Render/Railway/Ubuntu libreoffice обычно доступен как 'soffice' или 'libreoffice'
+            commands = ['libreoffice', 'soffice']
+            success = False
+            for cmd in commands:
+                try:
+                    subprocess.run([
+                        cmd, '--headless', '--convert-to', 'pdf', 
+                        '--outdir', self.temp_dir, abs_excel_path
+                    ], check=True, timeout=30)
+                    # LibreOffice сохраняет файл с тем же именем, что и оригинал, но с .pdf
+                    orig_name = os.path.splitext(os.path.basename(excel_path))[0]
+                    generated_pdf = os.path.join(self.temp_dir, f"{orig_name}.pdf")
+                    if os.path.exists(generated_pdf):
+                        os.rename(generated_pdf, pdf_path)
+                        success = True
+                        break
+                except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
+                    continue
             
-            # 0 представляет xlTypePDF
-            wb.ExportAsFixedFormat(0, os.path.abspath(pdf_path))
-            wb.Close(False)
-        finally:
-            excel.Quit()
-            pythoncom.CoUninitialize()
-            
+            if not success:
+                raise RuntimeError("Could not find LibreOffice for PDF conversion")
+                
+        except Exception as e:
+            print(f"PDF conversion failed: {e}")
+            raise e
+
         return pdf_path
