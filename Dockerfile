@@ -22,8 +22,8 @@ COPY . .
 # Создаем папки для временных файлов
 RUN mkdir -p uploads temp_pdfs
 
-# Выставляем порт
-EXPOSE 5000
+# Выставляем порт (по умолчанию 10000 для Render)
+EXPOSE 10000
 
-# Команда запуска
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]
+# Команда запуска с использованием переменной окружения PORT
+CMD gunicorn --bind 0.0.0.0:$PORT app:app
