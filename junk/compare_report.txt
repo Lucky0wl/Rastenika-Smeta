@@ -1,0 +1,42 @@
+Row 7: height template=18.75 vs gen=25.5
+Row 8: height template=18.75 vs gen=25.5
+Row 9: height template=18.75 vs gen=25.5
+Row 10: height template=15.75 vs gen=25.5
+Row 10 Col 1: font_color: T=FFFFFFFF G=00FFFFFF; font_size: T=15.0 G=None; font_name: T=Manrope G=None
+Row 10 Col 6: fill: T=00000000 G=FF434343
+Row 15: height template=15.75 vs gen=25.5
+Row 15 Col 1: font_color: T=FFFFFFFF G=00FFFFFF; font_size: T=15.0 G=None; font_name: T=Manrope G=None
+Row 15 Col 6: fill: T=00000000 G=FF434343
+Row 18: height template=18.75 vs gen=25.5
+Row 18 Col 1: font_bold: T=False G=True; font_color: T=FFFFFFFF G=00FFFFFF; font_size: T=13.0 G=None; font_name: T=Manrope G=None; alignment_h: T=None G=right
+Row 18 Col 2: fill: T=FF434343 G=00000000; font_color: T=FFFFFFFF G=FF000000; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 18 Col 3: fill: T=FF434343 G=00000000; font_color: T=FFFFFFFF G=FF000000; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 18 Col 4: fill: T=FF434343 G=00000000; font_color: T=FFFFFFFF G=FF000000; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 18 Col 5: font_bold: T=False G=True; font_size: T=13.0 G=15.0
+Row 18 Col 6: fill: T=00000000 G=FF434343
+Row 19 Col 1: font_bold: T=False G=True; font_size: T=13.0 G=30.0
+Row 19 Col 2: font_color: T=FFFFFFFF G=None; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 19 Col 3: font_color: T=FFFFFFFF G=None; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 19 Col 4: font_color: T=FFFFFFFF G=None; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 19 Col 5: font_color: T=FFFFFFFF G=None; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 20 Col 1: fill: T=FF434343 G=FFC7FF29; font_color: T=FFFFFFFF G=None; font_name: T=Manrope G=Montserrat; alignment_h: T=right G=center
+Row 20 Col 5: fill: T=FF434343 G=FFC7FF29; font_color: T=FFFFFFFF G=None; font_name: T=Manrope G=Montserrat
+Row 21 Col 1: font_bold: T=True G=False; font_size: T=30.0 G=13.0
+Row 21 Col 2: font_color: T=None G=FFFFFFFF; font_size: T=10.0 G=13.0; font_name: T=Arial G=Manrope; alignment_h: T=None G=center
+Row 21 Col 3: font_color: T=None G=FFFFFFFF; font_size: T=10.0 G=13.0; font_name: T=Arial G=Manrope; alignment_h: T=None G=center
+Row 21 Col 4: font_color: T=None G=FFFFFFFF; font_size: T=10.0 G=13.0; font_name: T=Arial G=Manrope; alignment_h: T=None G=center
+Row 21 Col 5: font_color: T=None G=FFFFFFFF; font_size: T=10.0 G=13.0; font_name: T=Arial G=Manrope; alignment_h: T=None G=center
+Row 22 Col 1: fill: T=FFC7FF29 G=FF434343; font_color: T=None G=FFFFFFFF; font_name: T=Montserrat G=Manrope; alignment_h: T=center G=right
+Row 22 Col 2: fill: T=FFC7FF29 G=00000000; font_bold: T=True G=False; font_color: T=None G=FF000000; font_size: T=15.0 G=10.0; font_name: T=Montserrat G=Arial; alignment_h: T=center G=None
+Row 22 Col 3: fill: T=FFC7FF29 G=00000000; font_bold: T=True G=False; font_color: T=None G=FF000000; font_size: T=15.0 G=10.0; font_name: T=Montserrat G=Arial; alignment_h: T=center G=None
+Row 22 Col 4: fill: T=FFC7FF29 G=00000000; font_bold: T=True G=False; font_color: T=None G=FF000000; font_size: T=15.0 G=10.0; font_name: T=Montserrat G=Arial; alignment_h: T=center G=None
+Row 22 Col 5: fill: T=FFC7FF29 G=FF434343; font_color: T=None G=FFFFFFFF; font_name: T=Montserrat G=Manrope
+Row 23 Col 1: font_bold: T=False G=True; font_size: T=13.0 G=18.0; alignment_h: T=None G=right
+Row 23 Col 2: fill: T=FF434343 G=00000000; font_color: T=FFFFFFFF G=FF000000; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 23 Col 3: fill: T=FF434343 G=00000000; font_color: T=FFFFFFFF G=FF000000; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 23 Col 4: fill: T=FF434343 G=00000000; font_color: T=FFFFFFFF G=FF000000; font_size: T=13.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 23 Col 5: font_bold: T=False G=True; font_size: T=13.0 G=16.0
+Row 24 Col 1: fill: T=FF434343 G=00000000; font_bold: T=True G=False; font_color: T=FFFFFFFF G=FF000000; font_size: T=15.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=right G=None
+Row 24 Col 5: fill: T=FF434343 G=00000000; font_bold: T=True G=False; font_color: T=FFFFFFFF G=FF000000; font_size: T=15.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None
+Row 25 Col 1: fill: T=FF434343 G=00000000; font_bold: T=True G=False; font_color: T=FFFFFFFF G=FF000000; font_size: T=18.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=right G=None
+Row 25 Col 5: fill: T=FF434343 G=00000000; font_bold: T=True G=False; font_color: T=FFFFFFFF G=FF000000; font_size: T=16.0 G=10.0; font_name: T=Manrope G=Arial; alignment_h: T=center G=None

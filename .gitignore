@@ -1,0 +1,9 @@
+__pycache__/
+venv/
+uploads/
+temp_pdfs/
+.last_pricelist
+*.pyc
+.vscode/
+.idea/
+.env

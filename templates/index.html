@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автосметчик: Ландшафт</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar / Navigation -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i data-lucide="leaf" class="logo-icon"></i>
+                <span class="logo-text">Rastenika</span>
+            </div>
+            <button id="toggle-sidebar" class="toggle-btn" title="Свернуть меню">
+                <i data-lucide="chevron-left"></i>
+            </button>
+            <nav class="main-nav">
+                <button class="nav-btn active" data-view="constructor">
+                    <i data-lucide="layout-template"></i> Конструктор
+                </button>
+                <button class="nav-btn" data-view="database">
+                    <i data-lucide="database"></i> База растений
+                </button>
+                <button class="nav-btn" data-view="settings">
+                    <i data-lucide="settings"></i> Настройки
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <p>© 2026 Ландшафт-Сервис</p>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header class="top-bar">
+                <div class="header-left">
+                    <h1>Автосметчик: Ландшафт</h1>
+                    <div id="db-status" class="db-status"></div>
+                </div>
+                <div class="user-profile">
+                    <div class="status-badge">Online</div>
+                </div>
+            </header>
+
+            <section id="view-constructor" class="view">
+                <div class="controls-row">
+                    <div class="upload-box" id="drop-zone">
+                        <i data-lucide="upload-cloud"></i>
+                        <span>Загрузить прайс (.xlsx)</span>
+                        <input type="file" id="file-input" hidden accept=".xlsx">
+                    </div>
+                    <div class="search-container">
+                        <i data-lucide="search"></i>
+                        <input type="text" id="plant-search" placeholder="Загрузите прайс для поиска..." disabled>
+                        <div id="search-results" class="search-dropdown hidden"></div>
+                    </div>
+                    <button id="manual-add-btn" class="btn-primary" style="white-space: nowrap;">
+                        <i data-lucide="plus"></i> Добавить ручную
+                    </button>
+                </div>
+
+                <div class="estimate-builder">
+                    <div class="table-card glass">
+                        <div class="card-header">
+                            <h2>Текущая смета</h2>
+                            <div class="actions" style="display:flex;gap:8px;">
+                                <button id="restore-estimate" class="btn-secondary hidden" style="color:#2DB224;border-color:#2DB224;">↩ Восстановить</button>
+                                <button id="clear-estimate" class="btn-secondary">Очистить</button>
+                            </div>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="estimate-table">
+                                <thead>
+                                    <tr>
+                                        <th>№</th>
+                                        <th>Тип</th>
+                                        <th>Наименование</th>
+                                        <th>Кондиция / Ед. изм.</th>
+                                        <th>Кол-во</th>
+                                        <th>Цена ед.</th>
+                                        <th>Посадка</th>
+                                        <th>Итого</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Items will be injected here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="no-items-message" id="empty-state">
+                            <i data-lucide="shopping-bag"></i>
+                            <p>Добавьте растения из поиска выше</p>
+                        </div>
+                    </div>
+
+                    <div class="summary-card glass">
+                        <h3>Итоговые показатели</h3>
+                        <div class="summary-row">
+                            <span>Растения и материалы:</span>
+                            <span id="sum-materials">0.00 ₽</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Работы по посадке:</span>
+                            <span id="sum-labor">0.00 ₽</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Доставка:</span>
+                            <span id="sum-delivery">0.00 ₽</span>
+                        </div>
+                        <div class="summary-row divider">
+                            <span>Налог (<span id="display-tax">0</span>%):</span>
+                            <span id="sum-tax">0.00 ₽</span>
+                        </div>
+                        <div class="summary-total">
+                            <span>К ОПЛАТЕ:</span>
+                            <span id="grand-total">0.00 ₽</span>
+                        </div>
+                        <div class="button-group">
+                            <button id="preview-btn" class="btn-primary" disabled
+                                style="margin-bottom: 12px; background-color: var(--secondary); color: white;">
+                                <i data-lucide="eye"></i> Предпросмотр
+                            </button>
+                            <button id="generate-xlsx-btn" class="btn-primary" disabled style="margin-bottom: 12px; width: 100%;">
+                                <i data-lucide="file-spreadsheet"></i> Выгрузить XLSX
+                            </button>
+                            <button id="generate-pdf-btn" class="btn-secondary" disabled style="width: 100%;">
+                                <i data-lucide="file-down"></i> Сформировать PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-database" class="view hidden">
+                <div class="table-card glass">
+                    <div class="card-header">
+                        <h2>Полная база растений</h2>
+                        <div class="search-container mini">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="db-search" placeholder="Быстрый поиск в базе...">
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; border-bottom: 1px solid #E2E8F0; gap: 16px;">
+                        <div style="font-size: 0.9rem; color: #64748B;">
+                            Показано <span id="db-count-shown">0</span> из <span id="db-count-total">0</span>
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button id="db-sort-name" class="btn-secondary" style="padding: 6px 12px; font-size: 0.9rem;">
+                                <i data-lucide="arrow-up-down" style="display: inline; width: 16px; margin-right: 4px;"></i> По имени
+                            </button>
+                            <button id="db-sort-price" class="btn-secondary" style="padding: 6px 12px; font-size: 0.9rem;">
+                                <i data-lucide="arrow-up-down" style="display: inline; width: 16px; margin-right: 4px;"></i> По цене
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-wrapper">
+                        <table id="db-table">
+                            <thead>
+                                <tr>
+                                    <th>Наименование</th>
+                                    <th>Сорт</th>
+                                    <th>Параметры</th>
+                                    <th>Цена</th>
+                                    <th>Действие</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- DB Items injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="padding: 16px 20px; text-align: center; border-top: 1px solid #E2E8F0;">
+                        <button id="db-load-more" class="btn-secondary" style="display: none;">
+                            <i data-lucide="chevron-down"></i> Показать ещё 100
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section id="view-settings" class="view hidden">
+                <div class="settings-grid">
+                    <div class="settings-card glass">
+                        <h3>Основные параметры</h3>
+                        <div class="input-group">
+                            <label>Ставка налога (%)</label>
+                            <input type="number" id="tax-rate" value="0">
+                        </div>
+                        <div class="input-group">
+                            <label>Процент посадки (%)</label>
+                            <input type="number" id="planting-percent" value="35" min="0" max="100">
+                        </div>
+                        <div class="input-group">
+                            <label>Стоимость доставки (₽)</label>
+                            <input type="number" id="delivery-cost" value="0" min="0">
+                        </div>
+                    </div>
+                    <div class="settings-card glass">
+                        <h3>Реквизиты компании</h3>
+                        <div class="input-group">
+                            <label>Название организации</label>
+                            <input type="text" id="company-name" placeholder="ООО Ландшафт">
+                        </div>
+                        <div class="input-group">
+                            <label>ИНН / Телефон</label>
+                            <input type="text" id="company-contacts" placeholder="+7 (999) 000-00-00">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Предпросмотр сметы (PDF)</h2>
+                <button id="close-modal" class="btn-icon"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="preview-iframe" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Add Modal -->
+    <div id="manual-add-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Добавить позицию вручную</h2>
+                <button id="close-manual-modal" class="btn-icon"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="manual-add-form" style="display: flex; flex-direction: column; gap: 16px;">
+                    <div class="input-group">
+                        <label for="manual-name">Наименование *</label>
+                        <input type="text" id="manual-name" required placeholder="Название растения или материала">
+                    </div>
+                    <div class="input-group">
+                        <label for="manual-params">Кондиция / Ед. изм.</label>
+                        <input type="text" id="manual-params" placeholder="Например: С5, шт., л.">
+                    </div>
+                    <div class="input-group">
+                        <label for="manual-type">Тип</label>
+                        <select id="manual-type">
+                            <option value="plant">Растение</option>
+                            <option value="material">Материал</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label for="manual-price">Цена (₽) *</label>
+                        <input type="number" id="manual-price" required min="0" step="0.01" placeholder="0.00">
+                    </div>
+                    <div class="input-group">
+                        <label for="manual-qty">Количество</label>
+                        <input type="number" id="manual-qty" value="1" min="1" step="0.01">
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 16px;">
+                        <button type="submit" class="btn-primary" style="flex: 1;">Добавить</button>
+                        <button type="button" id="cancel-manual-btn" class="btn-secondary" style="flex: 1;">Отмена</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
