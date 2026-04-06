@@ -1,8 +1,7 @@
 import os
 import time
 import uuid
-import subprocess
-import platform
+from playwright.sync_api import sync_playwright
 
 class PDFGenerator:
     def __init__(self):
@@ -27,62 +26,35 @@ class PDFGenerator:
         except OSError:
             pass
 
-    def create_pdf_from_excel(self, excel_path):
+    def create_pdf_from_html(self, html_content):
         """
-        Конвертирует XLSX в PDF. 
-        На Windows использует Excel (если доступен), на Linux — LibreOffice.
+        Использует Playwright (Chromium) для рендеринга HTML в PDF.
+        Это гарантирует идеальное качество и работу на Linux-хостинге.
         """
         filename = f"estimate_{uuid.uuid4()}.pdf"
         pdf_path = os.path.join(self.temp_dir, filename)
         
-        abs_excel_path = os.path.abspath(excel_path)
-        abs_pdf_path = os.path.abspath(pdf_path)
-
-        if platform.system() == 'Windows':
-            try:
-                import win32com.client as win32
-                import pythoncom
-                pythoncom.CoInitialize()
-                excel = win32.DispatchEx('Excel.Application')
-                excel.Visible = False
-                excel.DisplayAlerts = False
-                try:
-                    wb = excel.Workbooks.Open(abs_excel_path)
-                    wb.ExportAsFixedFormat(0, abs_pdf_path)
-                    wb.Close(False)
-                finally:
-                    excel.Quit()
-                    pythoncom.CoUninitialize()
-                return pdf_path
-            except Exception as e:
-                print(f"Excel COM failed, trying fallback: {e}")
-
-        # Fallback/Linux: LibreOffice
-        try:
-            # На Render/Railway/Ubuntu libreoffice обычно доступен как 'soffice' или 'libreoffice'
-            commands = ['libreoffice', 'soffice']
-            success = False
-            for cmd in commands:
-                try:
-                    subprocess.run([
-                        cmd, '--headless', '--convert-to', 'pdf', 
-                        '--outdir', self.temp_dir, abs_excel_path
-                    ], check=True, timeout=30)
-                    # LibreOffice сохраняет файл с тем же именем, что и оригинал, но с .pdf
-                    orig_name = os.path.splitext(os.path.basename(excel_path))[0]
-                    generated_pdf = os.path.join(self.temp_dir, f"{orig_name}.pdf")
-                    if os.path.exists(generated_pdf):
-                        os.rename(generated_pdf, pdf_path)
-                        success = True
-                        break
-                except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
-                    continue
+        with sync_playwright() as p:
+            # Запуск браузера в безголовом режиме.
+            # Аргумент --no-sandbox часто нужен в Docker/Linux
+            browser = p.chromium.launch(headless=True, args=["--no-sandbox"])
+            context = browser.new_context()
+            page = context.new_page()
             
-            if not success:
-                raise RuntimeError("Could not find LibreOffice for PDF conversion")
-                
-        except Exception as e:
-            print(f"PDF conversion failed: {e}")
-            raise e
-
+            # Устанавливаем контент страницы
+            page.set_content(html_content)
+            
+            # Ждем загрузки всех ресурсов (шрифты, стили)
+            page.wait_for_load_state("networkidle")
+            
+            # Генерируем PDF
+            page.pdf(
+                path=pdf_path,
+                format="A4",
+                print_background=True,
+                margin={"top": "0px", "right": "0px", "bottom": "0px", "left": "0px"}
+            )
+            
+            browser.close()
+            
         return pdf_path

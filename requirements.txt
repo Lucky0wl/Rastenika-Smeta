@@ -4,3 +4,4 @@ openpyxl
 pywin32; platform_system == 'Windows'
 Werkzeug
 gunicorn
+playwright

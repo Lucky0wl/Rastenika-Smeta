@@ -715,13 +715,30 @@ def generate_pdf():
     data = request.json
     if not data: return jsonify({'error': 'Данные не получены'}), 400
     try:
+        from datetime import datetime
         from pdf_generator import PDFGenerator
-        # 1. Сначала создаем идеальный XLSX
-        excel_path = create_app_xlsx(data)
         
-        # 2. Конвертируем его в PDF с помощью родного рендера Excel
+        # 1. Подготовка данных для шаблона
+        template_data = {
+            'date': datetime.now().strftime("%d.%m.%Y"),
+            'items': data.get('items', []),
+            'materials': data.get('materials', []),
+            'sum_materials': float(data.get('sum_materials', 0) or 0),
+            'labor_total': float(data.get('labor_total', 0) or 0),
+            'delivery_total': float(data.get('delivery_total', 0) or 0),
+            'tax_rate': float(data.get('tax_rate', 0) or 0),
+            'sum_tax': float(data.get('sum_tax', 0) or 0),
+            'grand_total': float(data.get('grand_total', 0) or 0),
+            'company_name': data.get('company_name', 'Rastenika'),
+            'company_contacts': data.get('company_contacts', '')
+        }
+        
+        # 2. Рендерим HTML
+        html_content = render_template('estimate_pdf.html', **template_data)
+        
+        # 3. Генерируем PDF через Playwright
         pdf_gen = PDFGenerator()
-        pdf_path = pdf_gen.create_pdf_from_excel(excel_path)
+        pdf_path = pdf_gen.create_pdf_from_html(html_content)
         
         return send_file(os.path.abspath(pdf_path), as_attachment=True, download_name="Коммерческое_предложение_Ландшафт.pdf", mimetype='application/pdf')
     except Exception as e:
@@ -730,5 +747,4 @@ def generate_pdf():
         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=True)

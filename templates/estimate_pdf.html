@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Коммерческое предложение</title>
+    <style>
+        @font-face {
+            font-family: 'Inter';
+            src: url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        }
+
+        :root {
+            --primary: #2DB224;
+            --secondary: #1E3A5F;
+            --text: #1A1C1E;
+            --muted: #64748B;
+            --border: #E2E8F0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            color: var(--text);
+            line-height: 1.5;
+            margin: 0;
+            padding: 40px;
+            background: white;
+            font-size: 12px;
+            /* Smaller for PDF */
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+        }
+
+        .logo-section h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .logo-section p {
+            margin: 5px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .meta-section {
+            text-align: right;
+        }
+
+        .meta-section h2 {
+            margin: 0;
+            font-size: 16px;
+            color: var(--secondary);
+        }
+
+        .section-title {
+            background-color: var(--secondary);
+            color: white;
+            padding: 8px 15px;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th {
+            text-align: left;
+            background-color: #F8FAFC;
+            color: var(--muted);
+            font-weight: 600;
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            text-transform: uppercase;
+            font-size: 10px;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #F1F5F9;
+            vertical-align: top;
+        }
+
+        .col-idx {
+            width: 5%;
+            color: var(--muted);
+        }
+
+        .col-name {
+            width: 45%;
+            font-weight: 600;
+        }
+
+        .col-params {
+            width: 20%;
+            color: var(--muted);
+        }
+
+        .col-qty {
+            width: 10%;
+            text-align: center;
+        }
+
+        .col-price {
+            width: 10%;
+            text-align: right;
+        }
+
+        .col-total {
+            width: 10%;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .summary-box {
+            margin-top: 40px;
+            margin-left: auto;
+            width: 300px;
+            border-top: 2px solid var(--secondary);
+            padding-top: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-top: 15px;
+            border-top: 1px solid var(--border);
+            padding-top: 10px;
+        }
+
+        .footer {
+            margin-top: 60px;
+            font-size: 10px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .price-val::after {
+            content: ' ₽';
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo-section">
+            <h1>Rastenika</h1>
+            <p>Ландшафтный сервис и декор</p>
+        </div>
+        <div class="meta-section">
+            <h2>Коммерческое предложение</h2>
+            <p>от {{ date }}</p>
+            <p>{{ company_name }}<br>{{ company_contacts }}</p>
+        </div>
+    </div>
+
+    <!-- Plants Section -->
+    <div class="section-title">Растения</div>
+    <table>
+        <thead>
+            <tr>
+                <th class="col-idx">№</th>
+                <th class="col-name">Наименование</th>
+                <th class="col-params">Параметры</th>
+                <th class="col-qty">Кол-во</th>
+                <th class="col-price">Цена</th>
+                <th class="col-total">Итого</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td class="col-idx">{{ loop.index }}</td>
+                <td class="col-name">{{ item.name }}</td>
+                <td class="col-params">{{ item.parameters }}</td>
+                <td class="col-qty">{{ item.quantity }}</td>
+                <td class="col-price price-val">{{ "{:,.2f}".format(item.price).replace(',', ' ') }}</td>
+                <td class="col-total price-val">{{ "{:,.2f}".format(item.total).replace(',', ' ') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Planting Section -->
+    {% if labor_total > 0 %}
+    <div class="section-title">Работы по посадке</div>
+    <table>
+        <tbody>
+            <tr>
+                <td class="col-name">Посадка стандартная (согласно спецификации)</td>
+                <td class="col-total price-val" style="width: 100%; text-align: right;">{{
+                    "{:,.2f}".format(labor_total).replace(',', ' ') }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+
+    <!-- Materials Section -->
+    {% if materials %}
+    <div class="section-title">Дополнительные материалы</div>
+    <table>
+        <thead>
+            <tr>
+                <th class="col-idx">№</th>
+                <th class="col-name">Наименование</th>
+                <th class="col-params">Параметры</th>
+                <th class="col-qty">Кол-во</th>
+                <th class="col-price">Цена</th>
+                <th class="col-total">Итого</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mat in materials %}
+            <tr>
+                <td class="col-idx">{{ loop.index }}</td>
+                <td class="col-name">{{ mat.name }}</td>
+                <td class="col-params">{{ mat.parameters or '-' }}</td>
+                <td class="col-qty">{{ mat.quantity }}</td>
+                <td class="col-price price-val">{{ "{:,.2f}".format(mat.price).replace(',', ' ') }}</td>
+                <td class="col-total price-val">{{ "{:,.2f}".format(mat.total).replace(',', ' ') }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+    <div class="summary-box">
+        <div class="summary-row">
+            <span>Растения и материалы:</span>
+            <span class="price-val">{{ "{:,.2f}".format(sum_materials).replace(',', ' ') }}</span>
+        </div>
+        {% if labor_total > 0 %}
+        <div class="summary-row">
+            <span>Работы по посадке:</span>
+            <span class="price-val">{{ "{:,.2f}".format(labor_total).replace(',', ' ') }}</span>
+        </div>
+        {% endif %}
+        {% if delivery_total > 0 %}
+        <div class="summary-row">
+            <span>Доставка:</span>
+            <span class="price-val">{{ "{:,.2f}".format(delivery_total).replace(',', ' ') }}</span>
+        </div>
+        {% endif %}
+        {% if tax_rate > 0 %}
+        <div class="summary-row">
+            <span>Налог ({{ tax_rate }}%):</span>
+            <span class="price-val">{{ "{:,.2f}".format(sum_tax).replace(',', ' ') }}</span>
+        </div>
+        {% endif %}
+        <div class="summary-row total">
+            <span>ИТОГО К ОПЛАТЕ:</span>
+            <span class="price-val">{{ "{:,.2f}".format(grand_total).replace(',', ' ') }}</span>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Данное предложение действительно в течение 7 календарных дней.</p>
+        <p>© 2026 Ландшафтный сервис Rastenika</p>
+    </div>
+</body>
+
+</html>
