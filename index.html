@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rastenika Smeta - Генератор Смет</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Manrope:wght@800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a1a;
+            --accent: #4CAF50;
+            --text: #f5f5f5;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0f0f0f;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-family: 'Manrope', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p {
+            font-size: 1.25rem;
+            line-height: 1.6;
+            color: #aaa;
+            margin-bottom: 2rem;
+        }
+
+        .badge {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: transform 0.2s, background 0.2s;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .warning {
+            margin-top: 3rem;
+            padding: 1rem;
+            border: 1px solid #333;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="badge">Windows + Excel Required</div>
+        <h1>Rastenika Smeta</h1>
+        <p>Профессиональный генератор коммерческих предложений (смет) для ландшафтного дизайна. Автоматизация расчетов,
+            экспорт в идеальный XLSX и PDF.</p>
+        <a href="https://github.com/Lucky0wl/Rastenika-Smeta" class="btn">Посмотреть код на GitHub</a>
+
+        <div class="warning">
+            ⚠️ Примечание: Это статическая страница-заглушка. Для работы приложения (Flask-бэкэнд + Excel API) его
+            необходимо запустить локально на Windows.
+        </div>
+    </div>
+</body>
+
+</html>
